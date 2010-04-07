@@ -10,13 +10,15 @@
 
 -----------------------------------------------------------------------------*/
 
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include <float.h>
 #include <math.h>
-#include <gl\gl.h>
+#include <GL/gl.h>
 
-#include "macro.h"
-#include "math.h"
+#include "Macro.h"
+#include "Math.h"
 #include "glTypes.h"
 
 /*-----------------------------------------------------------------------------

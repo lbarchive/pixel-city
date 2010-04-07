@@ -14,19 +14,21 @@
 
 #define SKYPOINTS      24
 
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include <math.h>
-#include <gl\gl.h>
+#include <GL/gl.h>
 
-#include "camera.h"
-#include "macro.h"
-#include "math.h"
-#include "random.h"
-#include "render.h"
-#include "sky.h"
-#include "texture.h"
+#include "Camera.h"
+#include "Macro.h"
+#include "Math.h"
+#include "Random.h"
+#include "Render.h"
+#include "Sky.h"
+#include "Texture.h"
 #include "glTypes.h"
-#include "world.h"
+#include "World.h"
 
 static CSky*          sky;
 

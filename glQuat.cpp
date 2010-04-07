@@ -10,12 +10,14 @@
 
 -----------------------------------------------------------------------------*/
 
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include <float.h>
 #include <math.h>
-#include <gl\gl.h>
+#include <GL/gl.h>
 
-#include "math.h"
+#include "Math.h"
 #include "glTypes.h"
 
 enum QuatPart {X, Y, Z, W};

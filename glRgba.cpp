@@ -10,14 +10,18 @@
 
 -----------------------------------------------------------------------------*/
 
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include <stdio.h>
-#include <gl\gl.h>
+#include <string.h>
+#include <GL/gl.h>
 #include <math.h>
 
-#include "math.h"
+#include "Math.h"
 #include "glTypes.h"
-#include "macro.h"
+#include "Macro.h"
+#include "Win.h"
 
 /*-----------------------------------------------------------------------------
 
@@ -168,7 +172,7 @@ GLrgba glRgba (char* string)
   strncmp (buffer, string, 10);
   if (pound = strchr (buffer, '#'))
     pound[0] = ' ';
-  if (sscanf (string, "%x", &color) != 1)
+  if (sscanf (string, "%lx", &color) != 1)
 	  return glRgba (0.0f);
   result.red = (float)GetBValue (color) / 255.0f;
   result.green = (float)GetGValue (color) / 255.0f;

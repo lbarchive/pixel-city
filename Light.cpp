@@ -16,22 +16,25 @@
 
 #define MAX_SIZE            5
 
+#ifdef _WIN32
 #include <windows.h>
-#include <math.h>
-#include <gl\gl.h>
-#include <gl\glu.h>
 #include <gl\glaux.h>
+#endif
+#include <math.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include "glTypes.h"
 
-#include "camera.h"
-#include "entity.h"
-#include "light.h"
-#include "macro.h"
-#include "math.h"
-#include "random.h"
-#include "render.h"
-#include "texture.h"
-#include "visible.h"
+#include "Camera.h"
+#include "Entity.h"
+#include "Light.h"
+#include "Macro.h"
+#include "Math.h"
+#include "Random.h"
+#include "Render.h"
+#include "Texture.h"
+#include "Visible.h"
+#include "Win.h"
 
 static GLvector2      angles[5][360];
 static CLight*        head;

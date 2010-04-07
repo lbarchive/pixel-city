@@ -41,7 +41,32 @@ enum
   WEST
 };
 
+#ifndef _WIN32
+
+/* Win32 compatibility */
+#include <sys/time.h>
+static inline long GetTickCount(void)
+{
+  struct timeval time;
+  gettimeofday(&time, NULL);
+
+  return time.tv_sec * 1000 + time.tv_usec / 1000;
+}
+
+#include <string.h>
+static inline void ZeroMemory(void* dest, size_t length)
+{
+  memset(dest, 0, length);
+}
+
+#define GetRValue(rgb)   ((unsigned char)(rgb))
+#define GetGValue(rgb)   ((unsigned char)((rgb) >> 8))
+#define GetBValue(rgb)   ((unsigned char)((rgb) >> 16))
+#endif
+
+#ifdef _WIN32
 HWND  WinHwnd (void);
+#endif
 void  WinPopup (char* message, ...);
 void  WinTerm (void);
 bool  WinInit (void);

@@ -22,29 +22,39 @@
 #define FONT_SIZE           (LOGO_PIXELS - LOGO_PIXELS / 8)
 #define BLOOM_SCALING       0.07f
 
+#ifdef _WIN32
 #include <windows.h>
+#else
+#include <stdlib.h>
+#include <GL/glut.h>
+#endif
 #include <stdio.h>
 #include <time.h>
 #include <stdarg.h>
 #include <math.h>
 
-#include <gl\gl.h>
-#include <gl\glu.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
-#include "gltypes.h"
-#include "entity.h"
-#include "car.h"
-#include "camera.h"
-#include "ini.h"
-#include "light.h"
-#include "macro.h"
-#include "math.h"
-#include "render.h"
-#include "sky.h"
-#include "texture.h"
-#include "world.h"
-#include "win.h"
+#include "glTypes.h"
+#include "Entity.h"
+#include "Car.h"
+#include "Camera.h"
+#include "Ini.h"
+#include "Light.h"
+#include "Macro.h"
+#include "Math.h"
+#include "Render.h"
+#include "Sky.h"
+#include "Texture.h"
+#include "World.h"
+#include "Win.h"
 
+#ifndef _WIN32
+#define SwapBuffers(...) glutSwapBuffers()
+#endif
+
+#ifdef _WIN32
 static	PIXELFORMATDESCRIPTOR pfd =			
 {
 	sizeof(PIXELFORMATDESCRIPTOR),			
@@ -66,6 +76,7 @@ static	PIXELFORMATDESCRIPTOR pfd =
 	0,											  // Reserved
 	0, 0, 0										// Layer Masks Ignored
 };
+#endif
 
 static char             help[] = 
   "ESC - Exit!\n" 
@@ -120,8 +131,10 @@ enum
 };
 #endif 
 
+#ifdef _WIN32
 static HDC			        hDC;
 static HGLRC		        hRC;
+#endif
 static float            render_aspect;
 static float            fog_distance;
 static int              render_width;
@@ -387,11 +400,16 @@ void RenderPrint (int x, int y, int font, GLrgba color, const char *fmt, ...)
   va_start(ap, fmt);		
   vsprintf(text, fmt, ap);				
   va_end(ap);		
-  glPushAttrib(GL_LIST_BIT);				
-  glListBase(fonts[font % FONT_COUNT].base_char - 32);				
+  //glPushAttrib(GL_LIST_BIT);
+  //glListBase(fonts[font % FONT_COUNT].base_char - 32);
   glColor3fv (&color.red);
 	glRasterPos2i (x, y);
-  glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
+  //glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
+
+  /*FIXME*/
+  char * ptr = text;
+  while (*ptr)
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, *ptr++);
 
 }
 
@@ -511,10 +529,12 @@ void RenderResize (void)
 void RenderTerm (void)
 {
 
+#ifdef _WIN32
   if (!hRC)
     return;
   wglDeleteContext (hRC);
   hRC = NULL;
+#endif
 
 }
 
@@ -525,6 +545,7 @@ void RenderTerm (void)
 void RenderInit (void)
 {
 
+#ifdef _WIN32 /*FIXME*/
   HWND              hWnd;
 	unsigned		      PixelFormat;
   HFONT	            font;		
@@ -553,6 +574,7 @@ void RenderInit (void)
 	  SelectObject(hDC, oldfont);
 	  DeleteObject(font);		
   }
+#endif
   //If the program is running for the first time, set the defaults.
   if (!IniInt ("SetDefaults")) {
     IniIntSet ("SetDefaults", 1);

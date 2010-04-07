@@ -12,51 +12,61 @@
 
 #define MOUSE_MOVEMENT          0.5f
 
+#ifdef _WIN32
 #include <windows.h>
+#include <scrnsave.h>
+#else
+#include <GL/glut.h>
+#endif
 #include <math.h>
 #include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
-#include <scrnsave.h>
 
-#include "camera.h"
-#include "car.h"
-#include "entity.h"
+#include "Camera.h"
+#include "Car.h"
+#include "Entity.h"
 #include "glTypes.h"
-#include "ini.h"
-#include "macro.h"
-#include "random.h"
-#include "render.h"
-#include "texture.h"
-#include "win.h"
-#include "world.h"
-#include "visible.h"
+#include "Ini.h"
+#include "Macro.h"
+#include "Random.h"
+#include "Render.h"
+#include "Texture.h"
+#include "Win.h"
+#include "World.h"
+#include "Visible.h"
 
 #pragma comment (lib, "opengl32.lib")
 #pragma comment (lib, "winmm.lib")
 #pragma comment (lib, "glu32.lib")
 #if SCREENSAVER
 #pragma comment (lib, "scrnsave.lib")
-#endif	
+#endif
 
 
 
+#ifdef _WIN32
 static HWND         hwnd;
 static HINSTANCE    module;
-static int          width;
-static int          height;
+#endif
+static int          width = 640/*HACK*/;
+static int          height = 480/*HACK*/;
 static int          half_width;
 static int          half_height;
 static bool         lmb;
 static bool         rmb;
 static bool         mouse_forced;
+#ifdef _WIN32
 static POINT        select_pos;
 static POINT        mouse_pos;
+#endif
 static bool         quit;
+#ifdef _WIN32
 static HINSTANCE    instance;
 
 LONG WINAPI ScreenSaverProc (HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
 
 /*-----------------------------------------------------------------------------
 
@@ -65,6 +75,7 @@ LONG WINAPI ScreenSaverProc (HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 static void CenterCursor ()
 {
 
+#ifdef _WIN32 /*FIXME*/
   int             center_x;
   int             center_y;
   RECT            rect;
@@ -75,6 +86,7 @@ static void CenterCursor ()
   center_x = rect.left + (rect.right - rect.left) / 2;
   center_y = rect.top + (rect.bottom - rect.top) / 2;
   SetCursorPos (center_x, center_y);
+#endif
 
 }
 
@@ -85,6 +97,7 @@ static void CenterCursor ()
 static void MoveCursor (int x, int y)
 {
 
+#ifdef _WIN32 /*FIXME*/
   int             center_x;
   int             center_y;
   RECT            rect;
@@ -95,6 +108,7 @@ static void MoveCursor (int x, int y)
   center_x = rect.left + x;
   center_y = rect.top + y;
   SetCursorPos (center_x, center_y);
+#endif
 
 }
 
@@ -109,10 +123,14 @@ void WinPopup (char* message, ...)
   char        buf[1024];
 
   va_start (marker, message);
-  vsprintf (buf, message, marker); 
+  vsprintf (buf, message, marker);
   va_end (marker);
-  MessageBox (NULL, buf, APP_TITLE, MB_ICONSTOP | MB_OK | 
+#ifdef _WIN32
+  MessageBox (NULL, buf, APP_TITLE, MB_ICONSTOP | MB_OK |
     MB_TASKMODAL);
+#else
+  printf("%s\n", buf); /*FIXME*/
+#endif
 
 }
 
@@ -134,8 +152,10 @@ int WinWidth (void)
 void WinMousePosition (int* x, int* y)
 {
 
+#ifdef _WIN32 /*FIXME*/
   *x = select_pos.x;
   *y = select_pos.y;
+#endif
 
 }
 
@@ -157,21 +177,27 @@ int WinHeight (void)
 
 void WinTerm (void)
 {
-#if !SCREENAVER
+
+#ifdef _WIN32 /*FIXME*/
+#if !SCREENSAVER
   DestroyWindow (hwnd);
 #endif
+#endif
+
 }
 
 /*-----------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------*/
 
+#ifdef _WIN32
 HWND WinHwnd (void)
 {
 
   return hwnd;
 
 }
+#endif
 
 
 /*-----------------------------------------------------------------------------
@@ -222,7 +248,7 @@ void AppInit (void)
                                 W i n M a i n
 -----------------------------------------------------------------------------*/
 
-void AppTerm (void) 
+void AppTerm (void)
 {
 
   TextureTerm ();
@@ -232,6 +258,120 @@ void AppTerm (void)
   WinTerm ();
 
 }
+
+#ifndef _WIN32
+
+static void resize (int newWidth, int newHeight)
+{
+  width  = newWidth;
+  height = newHeight;
+
+  IniIntSet ("WindowWidth", width);
+  IniIntSet ("WindowHeight", height);
+
+  RenderResize ();
+}
+
+static void keyboard (unsigned char key, int x, int y)
+{
+  switch (key)
+  {
+      case 'R':
+      case 'r':
+	  WorldReset();
+	  break;
+      case 'W':
+      case 'w':
+	  RenderWireframeToggle ();
+	  break;
+      case 'E':
+      case 'e':
+	  RenderEffectCycle ();
+	  break;
+      case 'L':
+      case 'l':
+	  RenderLetterboxToggle ();
+	  break;
+      case 'F':
+      case 'f':
+	  RenderFPSToggle ();
+	  break;
+      case 'G':
+      case 'g':
+	  RenderFogToggle ();
+	  break;
+      case 'T':
+      case 't':
+	  RenderFlatToggle ();
+	  break;
+#if !SCREENSAVER
+      case 'C':
+      case 'c':
+	  CameraAutoToggle ();
+	  break;
+      case 'B':
+      case 'b':
+	  CameraNextBehavior ();
+	  break;
+#endif
+  }
+}
+
+static void keyboard_s (int key, int x, int y)
+{
+  switch (key)
+  {
+      case GLUT_KEY_F1:
+	  RenderHelpToggle ();
+	  break;
+#if !SCREENSAVER
+      case GLUT_KEY_F5:
+	  CameraReset ();
+	  break;
+      case GLUT_KEY_UP:
+	  CameraMedial (1.0f);
+	  break;
+      case GLUT_KEY_DOWN:
+	  CameraMedial (-1.0f);
+	  break;
+      case GLUT_KEY_LEFT:
+	  CameraLateral (1.0f);
+	  break;
+      case GLUT_KEY_RIGHT:
+	  CameraLateral (-1.0f);
+	  break;
+      case GLUT_KEY_PAGE_UP:
+	  CameraVertical (1.0f);
+	  break;
+      case GLUT_KEY_PAGE_DOWN:
+	  CameraVertical (-1.0f);
+	  break;
+#endif
+  }
+}
+
+int main (int argc, char* argv[])
+{
+  glutInit (&argc, argv);
+  glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+  glutInitWindowSize (width, height);
+  glutInitWindowPosition (0,0);
+  glutCreateWindow (APP_TITLE);
+  glutIdleFunc (AppUpdate);
+  glutReshapeFunc (resize);
+  glutKeyboardFunc (keyboard);
+  glutSpecialFunc (keyboard_s);
+
+  AppInit ();
+
+  glutMainLoop();
+
+  AppTerm ();
+
+  return 0;
+}
+
+#else
 
 /*-----------------------------------------------------------------------------
                                 W i n M a i n
@@ -249,13 +389,13 @@ int PASCAL WinMain (HINSTANCE instance_in, HINSTANCE previous_instance,
   AppInit ();
   while (!quit) {
 		if (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))	{
-			if (msg.message == WM_QUIT)	
+			if (msg.message == WM_QUIT)
 				quit = true;
 			else {
-				TranslateMessage(&msg);			
-				DispatchMessage(&msg);			
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
 			}
-    } else 
+    } else
       AppUpdate ();
 
   }
@@ -283,8 +423,8 @@ LONG WINAPI ScreenSaverProc(HWND hwnd_in,UINT message,WPARAM wparam,LPARAM lpara
   switch(message)
   {
   case WM_SIZE:
-    width = LOWORD(lparam);  // width of client area 
-    height = HIWORD(lparam); // height of client area 
+    width = LOWORD(lparam);  // width of client area
+    height = HIWORD(lparam); // height of client area
     if (wparam == SIZE_MAXIMIZED) {
       IniIntSet ("WindowMaximized", 1);
     } else {
@@ -295,9 +435,9 @@ LONG WINAPI ScreenSaverProc(HWND hwnd_in,UINT message,WPARAM wparam,LPARAM lpara
     RenderResize ();
     break;
   case WM_KEYDOWN:
-    key = (int) wparam; 
+    key = (int) wparam;
     if (key == 'R')
-      WorldReset (); 
+      WorldReset ();
     else if (key == 'W')
       RenderWireframeToggle ();
     else if (key == 'E')
@@ -317,7 +457,7 @@ LONG WINAPI ScreenSaverProc(HWND hwnd_in,UINT message,WPARAM wparam,LPARAM lpara
     else if (!SCREENSAVER) {
       //Dev mode keys
       if (key == 'C')
-        CameraAutoToggle (); 
+        CameraAutoToggle ();
       if (key == 'B')
         CameraNextBehavior ();
       if (key == VK_F5)
@@ -374,14 +514,14 @@ LONG WINAPI ScreenSaverProc(HWND hwnd_in,UINT message,WPARAM wparam,LPARAM lpara
     }
     break;
   case WM_MOUSEMOVE:
-    p.x = LOWORD(lparam);  // horizontal position of cursor 
-    p.y = HIWORD(lparam);  // vertical position of cursor 
+    p.x = LOWORD(lparam);  // horizontal position of cursor
+    p.y = HIWORD(lparam);  // vertical position of cursor
     if (p.x < 0 || p.x > width)
       break;
     if (p.y < 0 || p.y > height)
       break;
     if (!mouse_forced && !lmb && !rmb) {
-      select_pos = p; 
+      select_pos = p;
     }
     if (mouse_forced) {
       mouse_forced = false;
@@ -412,7 +552,7 @@ LONG WINAPI ScreenSaverProc(HWND hwnd_in,UINT message,WPARAM wparam,LPARAM lpara
     hwnd = hwnd_in;
     if (SCREENSAVER)
       AppInit ();
-    SetTimer (hwnd, 1, 7, NULL); 
+    SetTimer (hwnd, 1, 7, NULL);
     return 0;
   case WM_TIMER:
     AppUpdate ();
@@ -424,7 +564,7 @@ LONG WINAPI ScreenSaverProc(HWND hwnd_in,UINT message,WPARAM wparam,LPARAM lpara
 #if SCREENSAVER
   return DefScreenSaverProc(hwnd_in,message,wparam,lparam);
 #else
-  return DefWindowProc (hwnd_in,message,wparam,lparam);   
+  return DefWindowProc (hwnd_in,message,wparam,lparam);
 #endif
 
 }
@@ -441,7 +581,7 @@ bool WinInit (void)
   int           style;
   bool          max;
 
-	wcex.cbSize         = sizeof(WNDCLASSEX); 
+	wcex.cbSize         = sizeof(WNDCLASSEX);
 	wcex.style			    = CS_HREDRAW | CS_VREDRAW;
 	wcex.lpfnWndProc	  = (WNDPROC)ScreenSaverProc;
 	wcex.cbClsExtra		  = 0;
@@ -473,7 +613,7 @@ bool WinInit (void)
     WinPopup ("Cannot create window");
     return false;
   }
-  if (max) 
+  if (max)
     ShowWindow (hwnd, SW_MAXIMIZE);
   else
     ShowWindow (hwnd, SW_SHOW);
@@ -481,3 +621,5 @@ bool WinInit (void)
   return true;
 
 }
+
+#endif

@@ -21,16 +21,18 @@
 #define CAMERA_CHANGE_INTERVAL  15
 #define CAMERA_CYCLE_LENGTH     (CAMERA_MODES*CAMERA_CHANGE_INTERVAL)
 
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include <math.h>
 #include <time.h>
 
 #include "glTypes.h"
-#include "ini.h"
-#include "macro.h"
-#include "math.h"
-#include "world.h"
-#include "win.h"
+#include "Ini.h"
+#include "Macro.h"
+#include "Math.h"
+#include "World.h"
+#include "Win.h"
 
 
 enum

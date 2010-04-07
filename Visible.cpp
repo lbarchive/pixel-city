@@ -15,16 +15,18 @@
 -----------------------------------------------------------------------------*/
 
 
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include <math.h>
 
 #include "glTypes.h"
-#include "camera.h"
-#include "macro.h"
-#include "math.h"
-#include "visible.h"
-#include "world.h"
-#include "win.h"
+#include "Camera.h"
+#include "Macro.h"
+#include "Math.h"
+#include "Visible.h"
+#include "World.h"
+#include "Win.h"
 
 static bool          vis_grid[GRID_SIZE][GRID_SIZE];
 
