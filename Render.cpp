@@ -500,7 +500,7 @@ void do_fps ()
 void RenderResize (void)		
 {
 
-  float     fovy;
+  float     fovy = 60.0f;
 
   render_width = WinWidth ();
   render_height = WinHeight ();
@@ -509,14 +509,13 @@ void RenderResize (void)
     render_height = render_height - letterbox_offset * 2;
   } else 
     letterbox_offset = 0;
-  //render_aspect = (float)render_height / (float)render_width;
+  render_aspect = (float)render_height / (float)render_width;
+  if (render_aspect > 1.0f)
+    fovy /= render_aspect;
+
   glViewport (0, letterbox_offset, render_width, render_height);
   glMatrixMode (GL_PROJECTION);
   glLoadIdentity ();
-  render_aspect = (float)render_width / (float)render_height;
-  fovy = 60.0f;
-  if (render_aspect > 1.0f) 
-    fovy /= render_aspect; 
   gluPerspective (fovy, render_aspect, 0.1f, RENDER_DISTANCE);
 	glMatrixMode (GL_MODELVIEW);
 

@@ -37,11 +37,13 @@
 #include "World.h"
 #include "Visible.h"
 
+#ifdef _WIN32
 #pragma comment (lib, "opengl32.lib")
 #pragma comment (lib, "winmm.lib")
 #pragma comment (lib, "glu32.lib")
 #if SCREENSAVER
 #pragma comment (lib, "scrnsave.lib")
+#endif
 #endif
 
 
@@ -314,7 +316,11 @@ static void keyboard (unsigned char key, int x, int y)
 	  CameraNextBehavior ();
 	  break;
 #endif
+      default:
+          return;
   }
+
+  glutPostRedisplay();
 }
 
 static void keyboard_s (int key, int x, int y)
@@ -347,17 +353,33 @@ static void keyboard_s (int key, int x, int y)
 	  CameraVertical (-1.0f);
 	  break;
 #endif
+      default:
+          return;
   }
+
+  glutPostRedisplay();
 }
+
+static void idle()
+{
+  AppUpdate();
+}
+
+static void visible(int vis)
+{
+  glutIdleFunc (vis == GLUT_VISIBLE ? idle : NULL);
+}
+
 
 int main (int argc, char* argv[])
 {
   glutInit (&argc, argv);
   glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+  glutInitDisplayString("double rgba depth>=16 rgba");
   glutInitWindowSize (width, height);
   glutInitWindowPosition (0,0);
   glutCreateWindow (APP_TITLE);
-  glutIdleFunc (AppUpdate);
+  glutVisibilityFunc(visible);
   glutReshapeFunc (resize);
   glutKeyboardFunc (keyboard);
   glutSpecialFunc (keyboard_s);
