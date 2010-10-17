@@ -400,11 +400,12 @@ void RenderPrint (int x, int y, int font, GLrgba color, const char *fmt, ...)
   va_start(ap, fmt);		
   vsprintf(text, fmt, ap);				
   va_end(ap);		
-  //glPushAttrib(GL_LIST_BIT);
-  //glListBase(fonts[font % FONT_COUNT].base_char - 32);
+  glPushAttrib(GL_LIST_BIT);
+  glListBase(fonts[font % FONT_COUNT].base_char - 32);
   glColor3fv (&color.red);
 	glRasterPos2i (x, y);
-  //glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
+  glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
+  glPopAttrib();
 
   /*FIXME*/
   char * ptr = text;
@@ -446,7 +447,6 @@ void RenderPrint (int line, const char *fmt, ...)
   RenderPrint (0, line * FONT_SIZE - 2, 0, glRgba (0.0f), text);
   RenderPrint (4, line * FONT_SIZE + 2, 0, glRgba (0.0f), text);
   RenderPrint (2, line * FONT_SIZE, 0, glRgba (1.0f), text);
-  glPopAttrib();						
   glPopMatrix ();
   glMatrixMode (GL_PROJECTION);
   glPopMatrix ();
