@@ -12,7 +12,6 @@
 
 -----------------------------------------------------------------------------*/
 
-#define HUE_COUNT         (sizeof(hue_list)/sizeof(float))
 #define LIGHT_COLOR_COUNT (sizeof(light_colors)/sizeof(HSL))
 
 #ifdef _WIN32
@@ -86,24 +85,23 @@ public:
 
 static HSL            light_colors[] = 
 { 
-  0.04f,  0.9f,  0.93f,   //Amber / pink
-  0.055f, 0.95f, 0.93f,   //Slightly brighter amber 
-  0.08f,  0.7f,  0.93f,   //Very pale amber
-  0.07f,  0.9f,  0.93f,   //Very pale orange
-  0.1f,   0.9f,  0.85f,   //Peach
-  0.13f,  0.9f,  0.93f,   //Pale Yellow
-  0.15f,  0.9f,  0.93f,   //Yellow
-  0.17f,  1.0f,  0.85f,   //Saturated Yellow
-  0.55f,  0.9f,  0.93f,   //Cyan
-  0.55f,  0.9f,  0.93f,   //Cyan - pale, almost white
-  0.6f,   0.9f,  0.93f,   //Pale blue
-  0.65f,  0.9f,  0.93f,   //Pale Blue II, The Palening
-  0.65f,  0.4f,  0.99f,   //Pure white. Bo-ring.
-  0.65f,  0.0f,  0.8f,    //Dimmer white.
-  0.65f,  0.0f,  0.6f,    //Dimmest white.
+  {0.04f,  0.9f,  0.93f},   //Amber / pink
+  {0.055f, 0.95f, 0.93f},   //Slightly brighter amber
+  {0.08f,  0.7f,  0.93f},   //Very pale amber
+  {0.07f,  0.9f,  0.93f},   //Very pale orange
+  {0.1f,   0.9f,  0.85f},   //Peach
+  {0.13f,  0.9f,  0.93f},   //Pale Yellow
+  {0.15f,  0.9f,  0.93f},   //Yellow
+  {0.17f,  1.0f,  0.85f},   //Saturated Yellow
+  {0.55f,  0.9f,  0.93f},   //Cyan
+  {0.55f,  0.9f,  0.93f},   //Cyan - pale, almost white
+  {0.6f,   0.9f,  0.93f},   //Pale blue
+  {0.65f,  0.9f,  0.93f},   //Pale Blue II, The Palening
+  {0.65f,  0.4f,  0.99f},   //Pure white. Bo-ring.
+  {0.65f,  0.0f,  0.8f},    //Dimmer white.
+  {0.65f,  0.0f,  0.6f},    //Dimmest white.
 }; 
 
-static float          hue_list[] = { 0.04f, 0.07f, 0.1f, 0.5f, 0.6f }; //Yellows and blues - good for lights
 static GLrgba         bloom_color;
 static long           last_update;
 static char           world[WORLD_SIZE][WORLD_SIZE];

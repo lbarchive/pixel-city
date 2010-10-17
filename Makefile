@@ -1,6 +1,6 @@
 SRCS    = $(wildcard *.cpp)
 OBJS    = $(patsubst %.cpp,%.o,$(SRCS))
-CFLAGS	= -g -Wno-write-strings
+CFLAGS	= -g -Wall -Wno-write-strings
 LDFLAGS	= -lGL -lGLU -lglut
 
 all: ${OBJS}

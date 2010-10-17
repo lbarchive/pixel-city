@@ -96,13 +96,13 @@ struct glFont
   unsigned		  base_char;
 } fonts[] = 
 {
-  "Courier New",      0,
-  "Arial",            0,
-  "Times New Roman",  0,
-  "Arial Black",      0,
-  "Impact",           0,
-  "Agency FB",        0,
-  "Book Antiqua",     0,
+  {"Courier New",      0},
+  {"Arial",            0},
+  {"Times New Roman",  0},
+  {"Arial Black",      0},
+  {"Impact",           0},
+  {"Agency FB",        0},
+  {"Book Antiqua",     0},
 };
 
 #if SCREENSAVER
