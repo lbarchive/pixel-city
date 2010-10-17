@@ -1,4 +1,4 @@
-#define LIMIT_INTERVAL(interval)  { static unsigned next_update; if (next_update > GetTickCount ()) return; next_update = GetTickCount () + interval;}
+#define LIMIT_INTERVAL(interval)  { static long next_update; if (next_update > GetTickCount ()) return; next_update = GetTickCount () + interval;}
 #define DEGREES_TO_RADIANS        .017453292F
 #define RADIANS_TO_DEGREES        57.29577951F
 #define PI                        ((double)3.1415926535F)
