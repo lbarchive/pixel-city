@@ -52,7 +52,7 @@ static GLvector2          angles[360];
 static bool               angles_done;
 static unsigned char      carmap[WORLD_SIZE][WORLD_SIZE];
 static CCar*              head;
-static unsigned           next_update;
+static time_t             next_update;
 static int                count;
 
 /*-----------------------------------------------------------------------------
@@ -118,7 +118,7 @@ void CarUpdate ()
 {
 
   CCar*       c;
-  unsigned    now;
+  time_t      now;
 
   if (!TextureReady () || !EntityReady ())
     return;

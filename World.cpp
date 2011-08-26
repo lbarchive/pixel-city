@@ -107,7 +107,7 @@ static long           last_update;
 static char           world[WORLD_SIZE][WORLD_SIZE];
 static CSky*          sky;
 static int            fade_state;
-static unsigned       fade_start;
+static time_t         fade_start;
 static float          fade_current;
 static int            modern_count;
 static int            tower_count;
@@ -116,7 +116,7 @@ static bool           reset_needed;
 static int            skyscrapers;
 static GLbbox         hot_zone;
 static int            logo_index;
-static unsigned       start_time;
+static time_t         start_time;
 static int            scene_begin;
 
 /*-----------------------------------------------------------------------------
@@ -728,7 +728,7 @@ int WorldSceneElapsed ()
 void WorldUpdate (void)
 {
 
-  unsigned      fade_delta;
+  time_t        fade_delta;
   int           now;
 
   now = GetTickCount ();

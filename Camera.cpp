@@ -56,9 +56,9 @@ static float        distance;
 static GLvector     movement;
 static bool         cam_auto;
 static float        tracker;
-static unsigned     last_update;
+static time_t       last_update;
 static int          camera_behavior;
-static unsigned     last_move;
+static time_t       last_move;
 
 /*-----------------------------------------------------------------------------
 
@@ -108,9 +108,9 @@ static void do_auto_cam ()
 {
 
   float     dist;
-  unsigned  t;
-  unsigned  elapsed;
-  unsigned  now;
+  time_t    t;
+  time_t    elapsed;
+  time_t    now;
   int       behavior; 
   GLvector  target;
 

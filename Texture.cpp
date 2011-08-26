@@ -584,7 +584,7 @@ void CTexture::Rebuild ()
   GLvector2       pos;
   bool            use_framebuffer;
   unsigned char*  bits;
-  unsigned        start;
+  time_t          start;
   int             lapsed;
 
   start = GetTickCount ();
