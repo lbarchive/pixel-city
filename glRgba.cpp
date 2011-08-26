@@ -169,14 +169,14 @@ GLrgba glRgba (char* string)
   char*   pound;
   GLrgba  result;
 
-  strncmp (buffer, string, 10);
+  strncpy (buffer, string, 10);
   if (pound = strchr (buffer, '#'))
     pound[0] = ' ';
   if (sscanf (string, "%lx", &color) != 1)
 	  return glRgba (0.0f);
-  result.red = (float)GetBValue (color) / 255.0f;
+  result.red = (float)GetRValue (color) / 255.0f;
   result.green = (float)GetGValue (color) / 255.0f;
-  result.blue = (float)GetRValue (color) / 255.0f;
+  result.blue = (float)GetBValue (color) / 255.0f;
   result.alpha = 1.0f;
   return result;  
 
