@@ -215,7 +215,7 @@ float EntityProgress ()
 void EntityUpdate ()
 {
 
-  unsigned    stop_time;
+  time_t      stop_time;
 
   if (!TextureReady ()) {
     sorted = false;

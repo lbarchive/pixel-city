@@ -45,7 +45,14 @@ enum
 
 /* Win32 compatibility */
 #include <sys/time.h>
-static inline long GetTickCount(void)
+/*
+ * DWORD WINAPI GetTickCount(void);
+ * DWORD A 32-bit unsigned integer. The range is 0 through 4294967295 decimal.
+ * DWORD = unsigned long
+ *
+ * In the GNU C library, time_t is equivalent to long int.
+ */
+static inline time_t GetTickCount(void)
 {
   struct timeval time;
   gettimeofday(&time, NULL);
